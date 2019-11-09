@@ -105,7 +105,7 @@ if [ -n "$INSTALL_OPAM" ]; then
     run "Build OPAM" make
 
     run "Install OPAM" make install
-    run "OPAM init" opam init -y -a --bare
+    run "OPAM init" opam init --yes --auto-setup --compiler=ocaml-system https://github.com/madroach/opam-repository.git
     run "OPAM config" opam config env
     # Install by hand, the above installation procedure fails on
     # Cygwin/Mingw
