@@ -89,37 +89,6 @@ if [ -n "$INSTALL_DUNE" ]; then
     echo "-=-=- Dune installed -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 fi
 
-if [ -n "$OCAMLFIND_VERSION" ]; then
-    cd $APPVEYOR_BUILD_FOLDER
-
-    echo
-    echo "-=-=- Build ocamlfind... -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    appveyor DownloadFile "http://download.camlcity.org/download/findlib-${OCAMLFIND_VERSION}.tar.gz"
-    tar xvf findlib-${OCAMLFIND_VERSION}.tar.gz
-    cd findlib-${OCAMLFIND_VERSION}
-    ROOT=$(cygpath -m "$PREFIX")
-    #ROOT=$(cygpath -u "$ROOT")
-    # Man path not protected against spaces:
-    BINDIR="$ROOT/bin"
-    SITELIB="$ROOT/lib/site-lib"
-    MANDIR="$ROOT/man"
-    CONFIG="$ROOT/etc/findlib.conf"
-    echo "bindir =$BINDIR"
-    echo "sitelib=$SITELIB"
-    echo "mandir =$MANDIR"
-    ./configure -bindir "$BINDIR" -sitelib "$SITELIB" -mandir "$MANDIR" \
-                -config "$CONFIG"
-    run "Makefile.config" cat Makefile.config
-    run "Build ocamlfind (byte)" make all
-    run "Build ocamlfind (native)" make opt
-    run "Install ocamlfind" make install
-    # Small test:
-    run "Content of $CONFIG" cat "$CONFIG"
-    run "ocamlfind printconf" ocamlfind printconf
-
-    echo "-=-=- ocamlfind installed -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-fi
-
 if [ -n "$INSTALL_OPAM" ]; then
     cd $APPVEYOR_BUILD_FOLDER
     echo
@@ -146,61 +115,4 @@ if [ -n "$INSTALL_OPAM" ]; then
     # cp src/opam-admin.top "$PREFIX/bin/opam-admin-top.exe"
     # cp src/opam-installer "$PREFIX/bin/opam-installer.exe"
     run "OPAM list" opam list -i
-    run "Switch to 4.07.1" opam switch create 4.07.1
-    if [ -z "$OCAMLFIND_VERSION" ]; then
-	opam install -y -v ocamlfind
-    fi
-    if [ -z "$INSTALL_DUNE" ]; then
-	opam install -y -v dune
-	dune --version
-    fi
-    if [ -z "$INSTALL_OASIS" ]; then
-	run "OPAM install oasis" opam install oasis
-    fi
-fi
-
-if [ -n "$INSTALL_OCAMLBUILD" ]; then
-    cd $APPVEYOR_BUILD_FOLDER
-    echo
-    echo "-=-=- Install ocamlbuild -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    # wget https://github.com/ocaml/ocamlbuild/archive/0.11.0.tar.gz
-    # tar xf 0.11.0.tar.gz
-    # cd ocamlbuild-0.11.0
-    # See https://github.com/ocaml/ocamlbuild/issues/261
-    git clone https://github.com/ocaml/ocamlbuild.git --depth 1
-    cd ocamlbuild
-    make configure
-    make
-    # https://github.com/ocaml/ocamlbuild/issues/261
-    run "Install ocamlbuild" make findlib-install
-    cd ..
-    run "ocamlbuild -where" ocamlbuild -where
-fi
-
-if [ -n "$INSTALL_OASIS" -a -n "$INSTALL_OCAMLBUILD" ]; then
-    echo
-    echo "-=-=- Install Camlp4 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    wget https://github.com/ocaml/camlp4/archive/4.05+2.tar.gz
-    tar xf 4.05+2.tar.gz
-    cd camlp4-4.05-2
-    ./configure --bindir="$PREFIX/bin" --libdir="$PREFIX/lib/camlp4"
-    make all
-    make install
-    cd ..
-
-    echo "-=-=- Install OASIS deps -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    ocaml $APPVEYOR_BUILD_FOLDER/install_oasis_pkg.ml \
-	  https://forge.ocamlcore.org/frs/download.php/1702/ocamlmod-0.0.9.tar.gz \
-	  https://ocaml.janestreet.com/ocaml-core/113.00/files/type_conv-113.00.02.tar.gz \
-	  https://forge.ocamlcore.org/frs/download.php/1310/ocaml-data-notation-0.0.11.tar.gz \
-	  http://forge.ocamlcore.org/frs/download.php/379/ocamlify-0.0.1.tar.gz
-
-    echo "-=-=- Install OASIS deps -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    git clone https://github.com/ocaml/oasis.git
-    cd oasis
-    ocaml setup.ml -configure --disable-tests --prefix "$PREFIX"
-    ocaml setup.ml -build
-    ocaml setup.ml -install
-
-    echo "-=-=- OASIS installed -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 fi
