@@ -17,10 +17,11 @@ function run {
 cd $APPVEYOR_BUILD_FOLDER
 
 # Do not perform end-of-line conversion
-echo "Clone OCaml branch $OCAMLBRANCH"
+echo "Clone OCaml branch ${OCAMLBRANCH}${OCAML_PATCHLEVEL:+.}${OCAML_PATCHLEVEL}"
 git config --global core.autocrlf false
-git clone https://github.com/ocaml/ocaml.git --branch $OCAMLBRANCH \
-    --depth 1 ocaml
+git clone https://github.com/ocaml/ocaml.git --depth 1 \
+    --branch $OCAMLBRANCH${OCAML_PATCHLEVEL:+.}${OCAML_PATCHLEVEL} \
+    ocaml
 
 cd ocaml
 
