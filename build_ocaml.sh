@@ -100,7 +100,6 @@ if [ -n "$INSTALL_OPAM" ]; then
     run "Configure OPAM with --prefix=$PREFIX" \
         ./configure --prefix="$PREFIX"
 
-    export DUNE_ARGS=--promote-install-files
     run "Build external libraries" make lib-ext
     #ls -lR
     run "Build OPAM" make
