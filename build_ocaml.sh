@@ -95,24 +95,12 @@ if [ -n "$INSTALL_OPAM" ]; then
     echo
     echo "-=-=- Install OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     git clone https://github.com/ocaml/opam.git --depth 1
-    #git clone https://github.com/Chris00/opam.git --depth 1
     cd opam
     chmod +x shell/msvs-detect
     run "Configure OPAM with --prefix=$PREFIX" \
         ./configure --prefix="$PREFIX"
-
     run "Build external libraries" make lib-ext
-    #ls -lR
     run "Build OPAM" make
-
     run "Install OPAM" make install
-    run "OPAM init" opam init --yes --auto-setup --compiler=ocaml-system https://github.com/madroach/opam-repository.git
-    run "OPAM config" opam config env
-    # Install by hand, the above installation procedure fails on
-    # Cygwin/Mingw
-    # cp src/opam "$PREFIX/bin/opam.exe"
-    # cp src/opam-admin "$PREFIX/bin/opam-admin.exe"
-    # cp src/opam-admin.top "$PREFIX/bin/opam-admin-top.exe"
-    # cp src/opam-installer "$PREFIX/bin/opam-installer.exe"
-    run "OPAM list" opam list -i
+    run "opam version" opam --version
 fi
