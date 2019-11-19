@@ -1,16 +1,16 @@
-set OCAMLROOT=C:/PROGRA~1/OCaml
+if [%OCAML_VERSION%]==[] set OCAML_VERSION="4.09.0"
+
 set OPAMROOT=C:/OPAM
 
-if not defined OCAML_BRANCH (set OCAML_BRANCH=4.09)
-set OCAMLURL="https://ci.appveyor.com/api/projects/madroach/ocaml-appveyor/artifacts/ocaml-%OCAML_BRANCH%.zip"
+set OPAM_URL="https://ci.appveyor.com/api/buildjobs/0ycghl7nkxky59ep/artifacts/opam-msvc64.zip"
 
-echo Downloading OCaml %OCAML_BRANCH% from "%OCAMLURL%"
-appveyor DownloadFile "%OCAMLURL%" -FileName "%temp%/ocaml.zip"
-cd "%PROGRAMFILES%"
-7z x -y "%temp%/ocaml.zip"
-del %temp%/ocaml.zip
+echo Downloading opam binary "%OPAM_URL%"
+appveyor DownloadFile "%OPAM_URL%" -FileName "%temp%/opam.zip"
+mkdir C:/OPAM
+7z e "%temp%/opam.zip" -oC:/cygwin/bin
+del %temp%/opam.zip
 
-set Path=C:/cygwin/bin;%Path%
+set Path=C:/cygwin/bin;C:/OPAM/bin;%Path%
 
 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
 
@@ -33,7 +33,7 @@ if exist %CYGWINBASH% (
   %CYGWINBASH% -lc "tr -d '\\r' </tmp/env >> ~/.bash_profile"
 )
 
-opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
+opam init --yes --compiler=%OCAML_VERSION% https://github.com/madroach/opam-repository.git
 REM stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 
