@@ -69,7 +69,7 @@ run "opam version" opam --version
 
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
-set OPAMROOT=${OCAMLROOT}/OPAM
+OPAMROOT=${OCAMLROOT}/OPAM
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 # stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
