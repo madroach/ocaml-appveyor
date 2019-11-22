@@ -1,14 +1,14 @@
 if [%OCAML_VERSION%]==[] set OCAML_VERSION="4.09.0"
 
-set OCAMLROOT=%PROGRAMFILES%/OCaml
+set OCAMLROOT=%ProgramFiles%/OCaml
 set OPAMROOT=%OCAMLROOT%/OPAM
 
 set OPAM_URL="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/ocaml-4.09.0.zip"
 
 echo Downloading opam binary %OPAM_URL%
 appveyor DownloadFile "%OPAM_URL%" -FileName "%temp%/ocaml.zip"
-7z x "%temp%/ocaml.zip" "-o%PROGRAMFILES%"
-echo extracted
+cd %ProgramFiles%
+7z x "%temp%/ocaml.zip"
 dir "%OCAMLROOT%"
 del "%temp%/ocaml.zip"
 
