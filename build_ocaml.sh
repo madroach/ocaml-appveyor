@@ -73,4 +73,4 @@ set OPAMROOT=${OCAMLROOT}/OPAM
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 # stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
-opam install dune ocamlbuild oasis batteries containers seq iter astring cmdlinnr ounit alcotest
+opam install dune ocamlbuild oasis batteries containers seq iter astring cmdliner ounit alcotest
