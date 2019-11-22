@@ -7,9 +7,7 @@ set OPAM_URL="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/o
 
 echo Downloading opam binary %OPAM_URL%
 appveyor DownloadFile "%OPAM_URL%" -FileName "%temp%/ocaml.zip"
-mkdir "%OCAMLROOT%"
-echo extracting from %temp%/ocaml.zip to -o%PROGRAMFILES%
-7z x %temp%/ocaml.zip -o%OCAMLROOT%
+7z x "%temp%/ocaml.zip" "-o%PROGRAMFILES%"
 echo extracted
 dir "%OCAMLROOT%"
 del "%temp%/ocaml.zip"
