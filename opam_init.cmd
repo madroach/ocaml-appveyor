@@ -11,6 +11,7 @@ mkdir "%OCAMLROOT%"
 echo extracting from %temp%/ocaml.zip to -o%PROGRAMFILES%
 7z x %temp%/ocaml.zip -o%OCAMLROOT%
 echo extracted
+dir "%PROGRAMFILES%"
 del "%temp%/ocaml.zip"
 
 REM Cygwin is always installed on AppVeyor.  Its path must come
