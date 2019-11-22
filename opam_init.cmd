@@ -1,13 +1,13 @@
 if [%OCAML_VERSION%]==[] set OCAML_VERSION="4.09.0"
 
-set OCAMLROOT="%PROGRAMFILES%/OCaml"
-set OPAMROOT="%OCAMLROOT%/OPAM"
+set OCAMLROOT=%PROGRAMFILES%/OCaml
+set OPAMROOT=%OCAMLROOT%/OPAM
 
 set OPAM_URL="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/ocaml-4.09.0.zip"
 
 echo Downloading opam binary %OPAM_URL%
 appveyor DownloadFile "%OPAM_URL%" -FileName "%temp%/ocaml.zip"
-mkdir %OCAMLROOT%
+mkdir "%OCAMLROOT%"
 echo extracting from %temp%/ocaml.zip to -o%PROGRAMFILES%
 7z x %temp%/ocaml.zip -o%OCAMLROOT%
 echo extracted
@@ -36,17 +36,17 @@ if exist %CYGWINBASH% (
 
 appveyor SetVariable -Name Path -Value "%Path%"
 appveyor SetVariable -Name OPAMROOT -Value "%OPAMROOT%"
-set OPAM_SWITCH_PREFIX=%OPAMROOT%/ocaml-system
+set "OPAM_SWITCH_PREFIX=%OPAMROOT%/ocaml-system"
 appveyor SetVariable -Name OPAM_SWITCH_PREFIX -Value "%OPAM_SWITCH_PREFIX%"
-set OCAMLLIB=%OCAMLROOT%/lib/ocaml
+set "OCAMLLIB=%OCAMLROOT%/lib/ocaml"
 appveyor SetVariable -Name CAML_LD_LIBRARY_PATH -Value "%CAML_LD_LIBRARY_PATH%"
-set CAML_LD_LIBRARY_PATH=%OCAMLROOT%/lib/stublibs:%OPAM_SWITCH_PREFIX%/lib/stublibs
+set "CAML_LD_LIBRARY_PATH=%OCAMLROOT%/lib/stublibs:%OPAM_SWITCH_PREFIX%/lib/stublibs"
 appveyor SetVariable -Name CAML_LD_LIBRARY_PATH -Value "%CAML_LD_LIBRARY_PATH%"
-set OCAMLTOP_INCLUDE_PATH="%OPAM_SWITCH_PREFIX%/lib/toplevel"
+set "OCAMLTOP_INCLUDE_PATH=%OPAM_SWITCH_PREFIX%/lib/toplevel"
 appveyor SetVariable -Name OCAMLTOP_INCLUDE_PATH -Value "%OCAMLTOP_INCLUDE_PATH%"
-set OCAMLPATH="%OPAM_SWITCH_PREFIX%/lib
+set "OCAMLPATH="%OPAM_SWITCH_PREFIX%/lib"
 appveyor SetVariable -Name OCAMLPATH -Value "%OCAMLPATH%"
-set OCAMLRUNPARAM="bs=8M"
+set "OCAMLRUNPARAM=bs=8M"
 appveyor SetVariable -Name OCAMLRUNPARAM -Value "%OCAMLRUNPARAM%"
 
 set <NUL /p=Ready to use OCaml & ocamlc -version
