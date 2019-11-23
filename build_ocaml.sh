@@ -17,10 +17,10 @@ function run {
 cd $APPVEYOR_BUILD_FOLDER
 
 # Do not perform end-of-line conversion
-echo "Clone OCaml version ${OCAML_VERSION}"
+echo "Clone OCaml branch ${OCAMLBRANCH}${OCAML_PATCHLEVEL:+.}${OCAML_PATCHLEVEL}"
 git config --global core.autocrlf false
 git clone https://github.com/ocaml/ocaml.git --depth 1 \
-    --branch $OCAML_VERSION \
+    --branch $OCAMLBRANCH${OCAML_PATCHLEVEL:+.}${OCAML_PATCHLEVEL} \
     ocaml
 
 cd ocaml
@@ -28,13 +28,44 @@ cd ocaml
 #PREFIX=$(echo "$OCAMLROOT" | sed -e "s|\\\\|/|g")
 PREFIX=$(cygpath -m -s "$OCAMLROOT")
 
-OCAML_MAJOR=`echo "$OCAML_VERSION" | sed -s 's/\([0-9]\+\).*/\1/'`
-OCAML_MINOR=`echo "$OCAML_VERSION" | sed -s 's/[0-9]\+\.\([0-9]\+\).*/\1/'`
-OCAML_PATCH=`echo "$OCAML_VERSION" | sed -s 's/[0-9]\+\.[0-9]\+\.\([0-9]\+\).*/\1/'`
+OCAMLBRANCH_MAJOR=`echo "$OCAMLBRANCH" | sed -s 's/\([0-9]\+\).*/\1/'`
+OCAMLBRANCH_MINOR=`echo "$OCAMLBRANCH" | sed -s 's/[0-9]\+\.\([0-9]\+\).*/\1/'`
+if [[ "$OCAMLBRANCH" != "trunk" \
+	  && (($OCAMLBRANCH_MAJOR -eq 4 && $OCAMLBRANCH_MINOR -lt 3) \
+		  || $OCAMLBRANCH_MAJOR -lt 4) ]]; then
+    run "Apply patch to OCaml sources (quote paths)" \
+	patch -p1 < $APPVEYOR_BUILD_FOLDER/ocaml.patch
+fi
 
-run "Configure" ./configure --build=x86_64-unknown-cygwin --host=x86_64-pc-windows --prefix="$PREFIX"
-run "make world.opt" make world.opt
-run "make install" make install
+if [[ ($OCAMLBRANCH_MAJOR -eq 4 && $OCAMLBRANCH_MINOR -lt 8)
+      || $OCAMLBRANCH_MAJOR -lt 4 ]]; then
+
+    if [[ "$OCAMLBRANCH" != "trunk" \
+	      && (($OCAMLBRANCH_MAJOR -eq 4 && $OCAMLBRANCH_MINOR -lt 5) \
+		      || $OCAMLBRANCH_MAJOR -lt 4) ]]; then
+	cp config/m-nt.h config/m.h
+	cp config/s-nt.h config/s.h
+    else
+	cp config/m-nt.h byterun/caml/m.h
+	cp config/s-nt.h byterun/caml/s.h
+    fi
+
+    echo "Edit config/Makefile.msvc64 to set PREFIX=$PREFIX"
+    sed -e "/PREFIX=/s|=.*|=$PREFIX|" \
+	-e "/^ *CFLAGS *=/s/\r\?$/ -WX\0/" \
+	config/Makefile.msvc64 > config/Makefile
+    run "Content of config/Makefile" cat config/Makefile
+
+    run "make world" make -f Makefile.nt world
+    run "make bootstrap" make -f Makefile.nt bootstrap
+    run "make opt" make -f Makefile.nt opt
+    run "make opt.opt" make -f Makefile.nt opt.opt
+    run "make install" make -f Makefile.nt install
+else
+    run "Configure" ./configure --build=x86_64-unknown-cygwin --host=x86_64-pc-windows --prefix="$PREFIX"
+    run "make world.opt" make world.opt
+    run "make install" make install
+fi
 
 run "OCaml config" ocamlc -config
 
@@ -42,40 +73,34 @@ run "OCaml config" ocamlc -config
 set Path=%OCAMLROOT%\bin;%OCAMLROOT%\bin\flexdll;%Path%
 export CAML_LD_LIBRARY_PATH=$PREFIX/lib/stublibs
 
-echo
-echo "-=-=- Install Dune -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
-#git clone https://github.com/ocaml/dune.git --depth 1 --branch=master
-git clone https://github.com/Chris00/dune.git --depth 1 --branch=master
-cd dune
-ocaml bootstrap.ml
-run "boot.exe" ./boot.exe --release --display progress
-./_boot/default/bin/main.exe install dune \
-			     --build-dir _boot --prefix "$PREFIX"
-run "dune version" dune --version
-echo "-=-=- Dune installed -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
-echo
-echo "-=-=- Install OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-cd $APPVEYOR_BUILD_FOLDER
-git clone https://github.com/ocaml/opam.git --depth 1
-cd opam
-chmod +x shell/msvs-detect
-run "Configure OPAM with --prefix=$PREFIX" ./configure --prefix="$PREFIX"
-run "Build external libraries" make lib-ext
-run "Build OPAM" make
-run "Install OPAM" make install
-run "opam version" opam --version
+if [ -n "$INSTALL_DUNE" ]; then
+    cd $APPVEYOR_BUILD_FOLDER
+    echo
+    echo "-=-=- Install Dune -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    #git clone https://github.com/ocaml/dune.git --depth 1 --branch=master
+    git clone https://github.com/Chris00/dune.git --depth 1 --branch=master
+    cd dune
+    ocaml bootstrap.ml
+    run "boot.exe" ./boot.exe --release --display progress
+    ./_boot/default/bin/main.exe install dune \
+				 --build-dir _boot --prefix "$PREFIX"
+    run "dune version" dune --version
+    echo "-=-=- Dune installed -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+fi
 
-echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-cd $APPVEYOR_BUILD_FOLDER
-OPAMROOT=C:/OPAM
-OPAM_SWITCH_PREFIX="${OPAMROOT}/ocaml-system"
-export OCAMLLIB="${OCAMLROOT}/lib/ocaml"
-export CAML_LD_LIBRARY_PATH="${OCAMLROOT}/lib/stublibs:${OPAM_SWITCH_PREFIX}/lib/stublibs"
-export OCAMLTOP_INCLUDE_PATH="${OPAM_SWITCH_PREFIX}/lib/toplevel"
-export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
-opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
-# stdlib-shims 0.1 is broken on Windows
-opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
-opam install --yes dune ocamlbuild batteries containers seq iter astring cmdliner ounit alcotest
+if [ -n "$INSTALL_OPAM" ]; then
+    cd $APPVEYOR_BUILD_FOLDER
+    echo
+    echo "-=-=- Install OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    git clone https://github.com/ocaml/opam.git --depth 1
+    cd opam
+    chmod +x shell/msvs-detect
+    run "Configure OPAM with --prefix=$PREFIX" \
+        ./configure --prefix="$PREFIX"
+    run "Build external libraries" make lib-ext
+    run "Build OPAM" make
+    run "Install OPAM" make install
+    run "opam version" opam --version
+fi

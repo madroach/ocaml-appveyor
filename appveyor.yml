@@ -15,7 +15,8 @@ environment:
     CYG_MIRROR: http://mirrors.kernel.org/sourceware/cygwin/
     CYG_CACHE: C:/cygwin/var/cache/setup
     OCAMLROOT: "%PROGRAMFILES%/OCaml"
-    OCAML_VERSION: 4.09.0
+    OCAMLBRANCH: 4.09
+    OCAML_PATCHLEVEL: 0
     INSTALL_DUNE: True
     INSTALL_OPAM: True
     # INSTALL_OCAMLBUILD: True
@@ -58,8 +59,8 @@ build_script:
   - '%CYG_ROOT%/bin/bash -lc "$APPVEYOR_BUILD_FOLDER/build_ocaml.sh"'
 
 after_build:
-  - 7z a "ocaml-%OCAML_VERSION%.zip" "%OCAMLROOT%"
+  - 7z a "ocaml-%OCAMLBRANCH%.zip" "%OCAMLROOT%"
 
 artifacts:
-  - path: "ocaml-$(OCAML_VERSION).zip"
+  - path: "ocaml-$(OCAMLBRANCH).zip"
     name: OCaml
