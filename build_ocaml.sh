@@ -69,12 +69,12 @@ run "opam version" opam --version
 
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
-OPAMROOT=${OCAMLROOT}/OPAM
+OPAMROOT=C:/OPAM
 OPAM_SWITCH_PREFIX="${OPAMROOT}/ocaml-system"
-OCAMLLIB="${OCAMLROOT}/lib/ocaml"
-CAML_LD_LIBRARY_PATH="${OCAMLROOT}/lib/stublibs:${OPAM_SWITCH_PREFIX}/lib/stublibs"
-OCAMLTOP_INCLUDE_PATH="${OPAM_SWITCH_PREFIX}/lib/toplevel"
-OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
+export OCAMLLIB="${OCAMLROOT}/lib/ocaml"
+export CAML_LD_LIBRARY_PATH="${OCAMLROOT}/lib/stublibs:${OPAM_SWITCH_PREFIX}/lib/stublibs"
+export OCAMLTOP_INCLUDE_PATH="${OPAM_SWITCH_PREFIX}/lib/toplevel"
+export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 # stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
