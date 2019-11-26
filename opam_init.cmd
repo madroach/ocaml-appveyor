@@ -57,3 +57,4 @@ set "OCAMLRUNPARAM=bs=8M"
 appveyor SetVariable -Name OCAMLRUNPARAM -Value "%OCAMLRUNPARAM%"
 
 set <NUL /p=Ready to use OCaml & ocamlc -version
+opam install -v --yes alcotest

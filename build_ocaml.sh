@@ -69,7 +69,7 @@ run "opam version" opam --version
 
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
-OPAMROOT=C:/OPAM
+export OPAMROOT=C:/OPAM
 OPAM_SWITCH_PREFIX="${OPAMROOT}/ocaml-system"
 export OCAMLLIB="${OCAMLROOT}/lib/ocaml"
 export CAML_LD_LIBRARY_PATH="${OCAMLROOT}/lib/stublibs:${OPAM_SWITCH_PREFIX}/lib/stublibs"
@@ -79,3 +79,5 @@ export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
 # stdlib-shims 0.1 is broken on Windows
 #opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 #opam install --yes dune ocamlbuild batteries containers seq iter astring cmdliner ounit alcotest
+
+cmd /c opam_init.cmd
