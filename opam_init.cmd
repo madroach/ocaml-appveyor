@@ -12,11 +12,15 @@ rem 7z x "%temp%/ocaml.zip"
 rem dir "%OCAMLROOT%"
 rem del "%temp%/ocaml.zip"
 
+set Path=C:/cygwin/bin;%Path%
 REM Cygwin is always installed on AppVeyor.  Its path must come
 REM before the one of Git but after those of MSCV and OCaml.
-set "Path=C:/cygwin/bin;%OCAMLROOT%/bin;%OCAMLROOT%/bin/flexdll;%Path%"
 
 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+
+REM Cygwin is always installed on AppVeyor.  Its path must come
+REM before the one of Git but after those of MSCV and OCaml.
+set Path=%OCAMLROOT%/bin;%OCAMLROOT%/bin/flexdll;%Path%
 
 set CYGWINBASH=C:/cygwin/bin/bash.exe
 
@@ -32,6 +36,10 @@ if exist %CYGWINBASH% (
   echo export OCAMLROOT_WIN OCAMLROOT >>C:\cygwin\tmp\env
   %CYGWINBASH% -lc "tr -d '\\r' </tmp/env >> ~/.bash_profile"
 )
+
+opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
+REM stdlib-shims 0.1 is broken on Windows
+opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 
 appveyor SetVariable -Name Path -Value "%Path%"
 appveyor SetVariable -Name OPAMROOT -Value "%OPAMROOT%"
