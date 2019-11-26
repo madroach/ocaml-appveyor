@@ -67,6 +67,11 @@ run "Build OPAM" make
 run "Install OPAM" make install
 run "opam version" opam --version
 
+cd ${OCAMLROOT}
+7z a "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip" *
+appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
+del"${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
+
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
 export OPAMROOT=C:/OPAM
@@ -83,3 +88,8 @@ export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 opam install -v --yes alcotest
+
+cd $OPAMROOT
+7z a "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip" *
+appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip"
+del "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip"
