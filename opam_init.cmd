@@ -22,7 +22,6 @@ REM Cygwin is always installed on AppVeyor.  Its path must come
 REM before the one of Git but after those of MSCV and OCaml.
 set Path=%OCAMLROOT%/bin;%OCAMLROOT%/bin/flexdll;%Path%
 
-opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 REM stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 
