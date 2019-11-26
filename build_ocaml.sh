@@ -70,7 +70,7 @@ run "opam version" opam --version
 cd ${OCAMLROOT}
 7z a "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip" *
 appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
-del"${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
+del "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
 
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
