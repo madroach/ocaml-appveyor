@@ -1,6 +1,6 @@
 if [%OCAML_VERSION%]==[] set OCAML_VERSION="4.09.0"
 
-set OCAMLROOT=%ProgramFiles%/OCaml
+set OCAMLROOT=C:/PROGRA~1/OCaml
 set OPAMROOT=C:/OPAM
 
 rem set OPAM_URL="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/ocaml-4.09.0.zip"
