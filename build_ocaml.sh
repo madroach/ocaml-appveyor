@@ -81,5 +81,7 @@ export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
 #opam install --yes dune ocamlbuild batteries containers seq iter astring cmdliner ounit alcotest
 
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
+opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
+opam install -v --yes alcotest
 
 cmd /c opam_init.cmd

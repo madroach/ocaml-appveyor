@@ -23,7 +23,6 @@ REM before the one of Git but after those of MSCV and OCaml.
 set Path=%OCAMLROOT%/bin;%OCAMLROOT%/bin/flexdll;%Path%
 
 REM stdlib-shims 0.1 is broken on Windows
-opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 
 appveyor SetVariable -Name Path -Value "%Path%"
 appveyor SetVariable -Name OPAMROOT -Value "%OPAMROOT%"
@@ -41,4 +40,3 @@ set "OCAMLRUNPARAM=bs=8M"
 appveyor SetVariable -Name OCAMLRUNPARAM -Value "%OCAMLRUNPARAM%"
 
 set <NUL /p=Ready to use OCaml & ocamlc -version
-opam install -v --yes alcotest
