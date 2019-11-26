@@ -1,16 +1,30 @@
 if [%OCAML_VERSION%]==[] set OCAML_VERSION="4.09.0"
 
-set OCAMLROOT=%ProgramFiles%/OCaml
+set ProgramFiles=C:/PROGRA~1
+set OCAMLROOT="%ProgramFiles%/OCaml"
 set OPAMROOT=C:/OPAM
 
-set OPAM_URL="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/ocaml-4.09.0.zip"
+set BUILD_ID="https://ci.appveyor.com/api/buildjobs/3uscc6wmf1thv0vx/artifacts/ocaml-4.09.0.zip"
+set URL="https://ci.appveyor.com/api/buildjobs/%BUILD_ID%/artifacts/"
 
-echo Downloading opam binary %OPAM_URL%
-appveyor DownloadFile "%OPAM_URL%" -FileName "%temp%/ocaml.zip"
-cd %ProgramFiles%
+echo Downloading binaries from %URL%
+appveyor DownloadFile "%URL%/ocaml-%OCAML_VERSION%" -FileName "%temp%/ocaml.zip"
+md "%OCAMLROOT%"
+cd "%OCAMLROOT%"
 7z x "%temp%/ocaml.zip"
 dir "%OCAMLROOT%"
 del "%temp%/ocaml.zip"
+
+if [%OPAM%]!=[] (
+  appveyor DownloadFile "%URL%/opam-%OCAML_VERSION%" -FileName "%temp%/opam.zip"
+  md "%OPAMROOT%"
+  cd "%OPAMROOT%"
+  7z x "%temp%/opam.zip"
+  dir "%OPAMROOT%"
+  del "%temp%/opam.zip"
+)
+
+cd "%APPVEYOR_BUILD_FOLDER%"
 
 REM Cygwin is always installed on AppVeyor.  Its path must come
 REM before the one of Git but after those of MSCV and OCaml.
