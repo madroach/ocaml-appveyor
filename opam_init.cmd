@@ -22,21 +22,6 @@ REM Cygwin is always installed on AppVeyor.  Its path must come
 REM before the one of Git but after those of MSCV and OCaml.
 set Path=%OCAMLROOT%/bin;%OCAMLROOT%/bin/flexdll;%Path%
 
-set CYGWINBASH=C:/cygwin/bin/bash.exe
-
-if exist %CYGWINBASH% (
-  REM Make sure that "link" is the MSVC one and not the Cynwin one.
-  echo VCPATH="`cygpath -u -p '%Path%'`" > C:\cygwin\tmp\msenv
-  echo PATH="$VCPATH:$PATH" >> C:\cygwin\tmp\msenv
-  %CYGWINBASH% -lc "tr -d '\\r' </tmp/msenv > ~/.msenv64"
-  %CYGWINBASH% -lc "echo '. ~/.msenv64' >> ~/.bash_profile"
-  REM Make OCAMLROOT available in Unix form:
-  echo OCAMLROOT_WIN="`cygpath -w -s '%OCAMLROOT%'`" > C:\cygwin\tmp\env
-  (echo OCAMLROOT="`cygpath -u \"$OCAMLROOT_WIN\"`") >>C:\cygwin\tmp\env
-  echo export OCAMLROOT_WIN OCAMLROOT >>C:\cygwin\tmp\env
-  %CYGWINBASH% -lc "tr -d '\\r' </tmp/env >> ~/.bash_profile"
-)
-
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 REM stdlib-shims 0.1 is broken on Windows
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
