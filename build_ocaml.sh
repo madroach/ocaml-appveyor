@@ -83,5 +83,3 @@ export OCAMLPATH="${OPAM_SWITCH_PREFIX}/lib"
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
 opam install -v --yes alcotest
-
-cmd /c opam_init.cmd
