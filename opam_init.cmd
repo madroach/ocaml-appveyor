@@ -12,7 +12,6 @@ appveyor DownloadFile "%URL%/ocaml-%OCAML_BRANCH%.zip" -FileName "%temp%/ocaml.z
 mkdir "%OCAMLROOT%"
 cd "%OCAMLROOT%"
 7z x "%temp%/ocaml.zip"
-dir "%OCAMLROOT%"
 del "%temp%/ocaml.zip"
 
 if not [%OPAM%]==[] (
@@ -20,7 +19,6 @@ if not [%OPAM%]==[] (
   mkdir "%OPAMROOT%"
   cd "%OPAMROOT%"
   7z x "%temp%/opam.zip"
-  dir "%OPAMROOT%"
   del "%temp%/opam.zip"
 )
 
