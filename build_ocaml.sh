@@ -31,6 +31,7 @@ PREFIX=$(cygpath -m -s "$OCAMLROOT")
 OCAML_MAJOR=`echo "$OCAML_VERSION" | sed -s 's/\([0-9]\+\).*/\1/'`
 OCAML_MINOR=`echo "$OCAML_VERSION" | sed -s 's/[0-9]\+\.\([0-9]\+\).*/\1/'`
 OCAML_PATCH=`echo "$OCAML_VERSION" | sed -s 's/[0-9]\+\.[0-9]\+\.\([0-9]\+\).*/\1/'`
+OCAML_BRANCH="${OCAML_MAJOR}.${OCAML_MINOR}"
 
 run "Configure" ./configure --build=x86_64-unknown-cygwin --host=x86_64-pc-windows --prefix="$PREFIX"
 run "make world.opt" make world.opt
@@ -68,9 +69,9 @@ run "Install OPAM" make install
 run "opam version" opam --version
 
 cd ${OCAMLROOT}
-7z a "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip" *
-appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
-rm "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_VERSION}.zip"
+7z a "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_BRANCH}.zip" *
+appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_BRANCH}.zip"
+rm "${APPVEYOR_BUILD_FOLDER}/ocaml-${OCAML_BRANCH}.zip"
 
 echo "-=-=- set up OPAM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 cd $APPVEYOR_BUILD_FOLDER
@@ -87,9 +88,9 @@ export OCAMLTOP_INCLUDE_PATH="${OPAM_SWITCH_PREFIX}/lib/toplevel"
 
 opam init --yes --compiler=ocaml-system https://github.com/madroach/opam-repository.git
 opam pin --no-action stdlib-shims.0.2.0 "https://github.com/ocaml/stdlib-shims.git#0.2.0"
-opam install -v --yes alcotest
+opam install --yes alcotest
 
 cd $OPAMROOT
-7z a "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip" *
-appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip"
-rm "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_VERSION}.zip"
+7z a "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_BRANCH}.zip" *
+appveyor PushArtifact "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_BRANCH}.zip"
+rm "${APPVEYOR_BUILD_FOLDER}/opam-${OCAML_BRANCH}.zip"
