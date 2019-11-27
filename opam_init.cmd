@@ -4,10 +4,9 @@ set ProgramFiles=C:/PROGRA~1
 set "OCAMLROOT=%ProgramFiles%/OCaml"
 set OPAMROOT=C:/OPAM
 
-set BUILD_ID=mj6ayadmp3hn2rdu
-set "URL=https://ci.appveyor.com/api/projects/madroach/ocaml-appveyor/artifacts/"
+set "URL=https://f000.backblazeb2.com/file/madroach-appveyor"
 
-echo Downloading binaries from %URL% version %OCAML_BRANCH%
+echo Downloading prebuilt OCaml from "%URL%/ocaml-%OCAML_BRANCH%.zip"
 appveyor DownloadFile "%URL%/ocaml-%OCAML_BRANCH%.zip" -FileName "%temp%/ocaml.zip"
 mkdir "%OCAMLROOT%"
 cd "%OCAMLROOT%"
@@ -15,6 +14,7 @@ cd "%OCAMLROOT%"
 del "%temp%/ocaml.zip"
 
 if not [%OPAM%]==[] (
+  echo Downloading prebuilt OPAM switch from "%URL%/opam-%OCAML_BRANCH%.zip"
   appveyor DownloadFile "%URL%/opam-%OCAML_BRANCH%.zip" -FileName "%temp%/opam.zip"
   mkdir "%OPAMROOT%"
   cd "%OPAMROOT%"
