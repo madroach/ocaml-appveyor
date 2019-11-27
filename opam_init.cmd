@@ -1,7 +1,7 @@
 if [%OCAML_BRANCH%]==[] set OCAML_BRANCH="4.09.0"
 
 set ProgramFiles=C:/PROGRA~1
-set OCAMLROOT="%ProgramFiles%/OCaml"
+set "OCAMLROOT=%ProgramFiles%/OCaml"
 set OPAMROOT=C:/OPAM
 
 set BUILD_ID=mj6ayadmp3hn2rdu
@@ -13,7 +13,7 @@ echo OPAMROOT is %OPAMROOT%
 
 echo Downloading binaries from %URL% version %OCAML_BRANCH%
 appveyor DownloadFile "%URL%/ocaml-%OCAML_BRANCH%.zip" -FileName "%temp%/ocaml.zip"
-md "%OCAMLROOT%"
+mkdir "%OCAMLROOT%"
 cd "%OCAMLROOT%"
 7z x "%temp%/ocaml.zip"
 dir "%OCAMLROOT%"
@@ -21,7 +21,7 @@ del "%temp%/ocaml.zip"
 
 if not [%OPAM%]==[] (
   appveyor DownloadFile "%URL%/opam-%OCAML_BRANCH%.zip" -FileName "%temp%/opam.zip"
-  md "%OPAMROOT%"
+  mkdir "%OPAMROOT%"
   cd "%OPAMROOT%"
   7z x "%temp%/opam.zip"
   dir "%OPAMROOT%"
