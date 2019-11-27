@@ -1,4 +1,4 @@
-if [%OCAML_BRANCH%]==[] set OCAML_BRANCH="4.09.0"
+if [%OCAML_BRANCH%]==[] set OCAML_BRANCH="4.09"
 
 set ProgramFiles=C:/PROGRA~1
 set "OCAMLROOT=%ProgramFiles%/OCaml"
@@ -6,10 +6,6 @@ set OPAMROOT=C:/OPAM
 
 set BUILD_ID=mj6ayadmp3hn2rdu
 set "URL=https://ci.appveyor.com/api/buildjobs/%BUILD_ID%/artifacts/"
-echo ProgramFiles is %ProgramFlies%
-echo URL is %URL%
-echo OCAMLROOT is %OCAMLROOT%
-echo OPAMROOT is %OPAMROOT%
 
 echo Downloading binaries from %URL% version %OCAML_BRANCH%
 appveyor DownloadFile "%URL%/ocaml-%OCAML_BRANCH%.zip" -FileName "%temp%/ocaml.zip"
