@@ -5,7 +5,7 @@ set "OCAMLROOT=%ProgramFiles%/OCaml"
 set OPAMROOT=C:/OPAM
 
 set BUILD_ID=mj6ayadmp3hn2rdu
-set "URL=https://ci.appveyor.com/api/buildjobs/%BUILD_ID%/artifacts/"
+set "URL=https://ci.appveyor.com/api/projects/madroach/ocaml-appveyor/artifacts/"
 
 echo Downloading binaries from %URL% version %OCAML_BRANCH%
 appveyor DownloadFile "%URL%/ocaml-%OCAML_BRANCH%.zip" -FileName "%temp%/ocaml.zip"
